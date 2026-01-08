@@ -10,8 +10,8 @@ const PORT = 6000;
 app.use(bodyParser.urlencoded({extends:false}));
 app.use(bodyParser.json());
 
-app.get("/", (req, res) =>{
-    return res.send("this is root page. Do need authentication");
+app.get("/login", (req, res) =>{
+    return res.send("this is login page. Don't need authentication");
 });
 
 app.post(
@@ -20,7 +20,7 @@ app.post(
         "local", 
         {
             successRedirect: "/secrets",
-            failureRedirect: "/",
+            failureRedirect: "/login",
             session:false
         }
     )
@@ -50,7 +50,7 @@ passport.use(
         function verify(username, password, cb){
             const userCredentials = getUserInfo(username);
             if(!userCredentials)
-                return cb("User does not exist", false);
+                return cb(null, false, { message:"User does not exist"});
             if(password === userCredentials.password){
                 const userInfo = {};
                 userInfo.name = userCredentials.name;
@@ -58,7 +58,7 @@ passport.use(
                 return cb(null, userInfo);
             }
 
-            return cb("incorrect password", null);
+            return cb(null, false, {message: "incorrect password"});
 
         }
     )
