@@ -15,15 +15,26 @@ app.get("/login", (req, res) =>{
 });
 
 app.post(
-    "/login", 
-    passport.authenticate(
-        "local", 
-        {
-            successRedirect: "/secrets",
-            failureRedirect: "/login",
-            session:false
-        }
-    )
+    "/login", function(req, res, next){
+        passport.authenticate(
+            "local", 
+            { 
+                successRedirect: "/secrets",
+                failureRedirect: "/login",
+                session:false 
+            },
+            function(err, user, info, status){
+                if(err)
+                    return res.send(err);
+                
+                if(!user)
+                    return res.send("login fail");
+
+                return  res.send("login success");
+
+            }
+        )(req, res, next);
+    }
 );
 
 app.get("/secrets", (req, res) =>{
@@ -58,8 +69,8 @@ passport.use(
                 return cb(null, userInfo);
             }
 
-            return cb(null, false, {message: "incorrect password"});
-
+            //return cb(null, false, {message: "incorrect password"});
+            return cb("intend error", false, {message: "throw error intendedly"});
         }
     )
 );
