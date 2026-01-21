@@ -24,13 +24,17 @@ app.post(
                 session:false 
             },
             function(err, user, info, status){
-                if(err)
-                    return res.send(err);
+                if(err){
+                    //return res.send(err);
+                    return res.redirect("/login");
+                }
                 
-                if(!user)
-                    return res.send("login fail");
-
-                return  res.send("login success");
+                if(!user){
+                    //return res.send(info);
+                    return res.redirect("/login");
+                }
+                //return res.send(user);
+                return res.redirect("/secrets");
 
             }
         )(req, res, next);
