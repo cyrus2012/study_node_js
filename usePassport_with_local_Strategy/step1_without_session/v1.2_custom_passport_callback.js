@@ -19,8 +19,8 @@ app.post(
         passport.authenticate(
             "local", 
             { 
-                successRedirect: "/secrets",
-                failureRedirect: "/login",
+            //    successRedirect: "/secrets",
+            //    failureRedirect: "/login",
                 session:false 
             },
             function(err, user, info, status){
