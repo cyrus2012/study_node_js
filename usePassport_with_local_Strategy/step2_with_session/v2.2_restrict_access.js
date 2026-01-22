@@ -37,6 +37,8 @@ app.post(
 );
 
 app.get("/secrets", (req, res) =>{
+    if(!req.isAuthenticated())
+        return res.redirect("/login");
     
     console.log(req.session);
     return res.send("This is secrets page. User " + req.user?.id 
