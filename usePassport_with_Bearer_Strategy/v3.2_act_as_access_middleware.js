@@ -73,6 +73,38 @@ app.get("/user2", function(req, res, next){
 
 
 
+
+app.use("/api/{*splat}", passport.authenticate("bearer", {session:false}));
+app.get("/api/secrets", function (req, res, next){
+    console.log(req.user);
+    console.log(req.isAuthenticated());
+    return res.send("This is protected api/secrets page.");
+
+});
+
+function tokenAuthenticate(req, res, next){
+     passport.authenticate("bearer", function(error, decodedData, info){
+        if(error)
+            return res.send(error);
+
+        if(!decodedData)
+            return res.send("no decoded Data");
+
+        req.user = decodedData;
+        //return res.send(decodedData);
+        next();
+    })(req, res, next);
+}
+
+app.use("/apicustom/{*splat}", tokenAuthenticate);
+app.get("/apicustom/secrets", function (req, res, next){
+    console.log(req.user);
+    console.log(req.isAuthenticated());
+    return res.send("This is protected apicustom/secrets page.");
+
+});
+
+
 app.get("/secrets", (req, res) =>{
    return res.send("This is secrets page. Access this page after login");
 });
