@@ -4,6 +4,8 @@ import passport from "passport";
 import {Strategy} from "passport-local";
 import jwt from "jsonwebtoken";
 import BearerStrategy from "passport-http-bearer";
+import repository from "./repository.js";
+import service from "./service.js";
 
 const app = express();
 
@@ -49,39 +51,33 @@ app.post(
     }
 );
 
-/*
-app.get("/user1", passport.authenticate("bearer", {session:false}), 
-    function (req, res){
-        res.send(req.user);
-    }        
-);
 
-app.get("/user2", function(req, res, next){
-    passport.authenticate("bearer", function(error, decodedData, info){
-        if(error)
-            return res.send(error);
-
-        if(!decodedData)
-            return res.send("no decoded Data");
-
-        console.log(req.user);
-
-        req.user = decodedData;
-        return res.send(decodedData);
-    })(req, res, next);
-        
-});
-*/
-
-
+console.log(service);
 
 app.use("/api/{*splat}", passport.authenticate("bearer", {session:false}));
-app.get("/api/secrets", function (req, res, next){
-    console.log(req.user);
-    console.log(req.isAuthenticated());
-    return res.send("This is protected api/secrets page.");
+app.get("/api/secreta", function (req, res, next){
+    //console.log(req.user);
+    //console.log(req.isAuthenticated());
+    //return res.send("This is protected api/secrets page.");
 
+    return service["serviceA"](req, res);
 });
+
+app.get("/api/secretb", function (req, res, next){
+    
+    return service["serviceB"](req, res);
+});
+
+app.get("/api/secretc", function (req, res, next){
+    
+    return service["serviceC"](req, res);
+});
+
+app.get("/api/secretd", function (req, res, next){
+    
+    return service["serviceD"](req, res);
+});
+
 
 function tokenAuthenticate(req, res, next){
      passport.authenticate("bearer", function(error, decodedData, info){
@@ -105,32 +101,19 @@ app.get("/apicustom/secrets", function (req, res, next){
 
 });
 
-/*
-app.get("/secrets", (req, res) =>{
-   return res.send("This is secrets page. Access this page after login");
-});
-*/
-
 
 app.listen(PORT, () => 
     console.log(`start listening to port ${PORT}`)
 );
 
 
-const user = {id:1, name: "Tom", password:"123456"};
-
-function getUserInfo(username){
-    if(username === user.name)
-        return user;
-    return null;
-}
 
 passport.use(
     "local", 
     new Strategy(
         {usernameField: "username", passwordField:"password"}, 
         function verify(username, password, cb){
-            const userCredentials = getUserInfo(username);
+            const userCredentials = repository.getUserInfoByName(username);
             if(!userCredentials)
                 return cb(null, false, { message:"User does not exist"});
             if(password === userCredentials.password){
