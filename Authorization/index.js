@@ -52,8 +52,6 @@ app.post(
 );
 
 
-console.log(service);
-
 app.use("/api/{*splat}", passport.authenticate("bearer", {session:false}));
 app.get("/api/secreta", function (req, res, next){
     //console.log(req.user);

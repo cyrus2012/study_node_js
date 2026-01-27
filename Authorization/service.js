@@ -30,6 +30,7 @@ function permissionCheck(actionName, serviceFunction){
         if(!user)
             return res.send("cannot find user data");
 
+        //get the permitted service of a particular role
         const permitServices = repository.getPermitServiceByRole(user.roleId);
         if(!permitServices)
             return res.send(`no services available to user ${user.name}`);
@@ -62,6 +63,5 @@ authorizedServices["serviceA"] = permissionCheck("serviceA" , serviceA);
 authorizedServices["serviceB"] = permissionCheck("serviceB" , serviceB);
 authorizedServices["serviceC"] = permissionCheck("serviceC" , serviceC);
 authorizedServices["serviceD"] = permissionCheck("serviceD" , serviceD);
-
 
 export default authorizedServices;
